@@ -23,9 +23,11 @@ while True:
                 file_contents = file.read().encode()
                 connection_socket.send(b'HTTP/1.1 200 OK\n')
                 connection_socket.send(b'Content-Type: %s \n' % mimetype.encode())
-                connection_socket.send(file_contents)
+                connection_socket.send(b'Content-Length: %i \n' % len(file_contents))
+                connection_socket.send(b'HttpOnly\n\n')
+                connection_socket.sendall(file_contents)
                 print('200')
-        except:
+        except FileNotFoundError as exception:
             connection_socket.send(b'HTTP/1.1 404 Not Found\n')
             connection_socket.send(b"prolly 404\n")
             print('404')
