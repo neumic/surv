@@ -9,6 +9,9 @@ while True:
     connection_socket, address = server_socket.accept()
 
     lines = connection_socket.recv(1024).decode().splitlines()
+    if len(lines) == 0:
+        continue
+    
     first_line_parts = lines[0].split(' ')
 
     verb = first_line_parts[0]
@@ -27,7 +30,7 @@ while True:
                 connection_socket.send(b'HttpOnly\n\n')
                 connection_socket.sendall(file_contents)
                 print('200')
-        except FileNotFoundError as exception:
+        except (FileNotFoundError, IsADirectoryError) as exception:
             connection_socket.send(b'HTTP/1.1 404 Not Found\n')
             connection_socket.send(b"prolly 404\n")
             print('404')
