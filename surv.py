@@ -5,12 +5,12 @@ import socket
 
 server_socket = socket.create_server(("", 8080))
 
-while True:
+def request_loop():
     connection_socket, address = server_socket.accept()
 
     lines = connection_socket.recv(1024).decode().splitlines()
     if len(lines) == 0:
-        continue
+        return
     
     first_line_parts = lines[0].split(' ')
 
@@ -36,3 +36,9 @@ while True:
             print('404')
         finally:
             connection_socket.close()
+
+while True:
+    try:
+        request_loop()
+    except KeyboardInterrupt:
+        exit()
